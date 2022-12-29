@@ -112,7 +112,9 @@ var glutenFree = function (desserts) {
 // given an array of tweet objects, return a new array of strings
 // containing only the message properties.
 var allUserMessages = function(tweets) {
-
+  var tweetMessages = _.map(tweets, function(item) {
+    return item.message;
+  }); return tweetMessages;
 };
 
 // use _.map to return an array of items with their sale prices, with a new property
@@ -135,8 +137,13 @@ var allUserMessages = function(tweets) {
   ];
 
 */
-var applyCoupon = function (groceries, coupon) {
 
+var applyCoupon = function (groceries, coupon) {
+  var couponPrices = _.map(groceries, function(item) {
+    var removedSign = parseFloat(item.price.replace('$', ''));
+    item.salePrice = '$' + (removedSign - (removedSign * coupon)).toFixed(2);
+    return item;
+  }); return couponPrices;
 };
 
 /*
@@ -147,13 +154,22 @@ var applyCoupon = function (groceries, coupon) {
 
 // return the total price of all products.
 var sumTotal = function (products) {
-
+  var prices = _.map(products, function(item) {
+    return parseFloat(item.price.replace('$', ''));
+  });
+  var sum = _.reduce(prices, function(total, item, index, prices) {
+    return total + item;
+  }); return sum;
 };
 
 // return an object consisting of dessert types and how many of each.
 // exampleOutput: { dessertType: 3, dessertType2: 1 }
 var dessertCategories = function (desserts) {
-
+  var count = {};
+  _.reduce(desserts, function(list, item) {
+    count[item.type] = (count[item.type] || 0) + 1;
+  }, 0);
+  return count;
 };
 
 // return an object with the proper count of all user messages
@@ -168,19 +184,34 @@ var dessertCategories = function (desserts) {
   }
 */
 var countMessagesPerUser = function(tweets) {
-
+  var count = {};
+  _.reduce(tweets, function(list, item) {
+    count[item.user] = (count[item.user] || 0) + 1;
+  }, 0); return count;
 };
 
 // given an array of movie data objects,return an array containing
 // movies that came out between 1990 and 2000.
 // TIP: use an array as your accumulator - don't push to an external array!
-var ninetiesKid = function (movies) {
 
+var ninetiesKid = function (movies) {
+  var resultList = [];
+  _.reduce(movies, function(list, item) {
+    if (item.releaseYear >= 1990 && item.releaseYear <= 2000) {
+      resultList.push(item.title);
+    }
+  }); return resultList;
 };
+
 
 // return an boolean stating if there exists a movie with a shorter
 // runtime than your time limit.
 // timeLimit is an integer representing a number of minutes.
 var movieNight = function (movies, timeLimit) {
-
+  var meetsTime = false;
+  _.reduce(movies, function(list, item) {
+    if (item.runtime < timeLimit) {
+      meetsTime = true;
+    }
+  }); return meetsTime;
 };
